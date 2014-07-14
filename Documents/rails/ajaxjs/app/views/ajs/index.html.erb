@@ -1,0 +1,183 @@
+<html>
+<head>
+<style type="text/css">
+	.tr td
+	{
+		text-align: center;
+	}
+
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+var ajaxoptions=
+{
+	url: "ajs/index",
+    type: "GET",
+    dataType: "JSON",
+    success: function(data) {  
+      var output="";
+
+          for(i=0;i<data.length;i++)
+	         {
+	           output+="<table><tr><th>&emsp; name</th><th>&emsp; Title</th><th>&emsp; Content</th></tr><tr class='tr'><td >"+data[i].name
+	           +"</td><td>&emsp; "+data[i].id
+	           +"</td><td> &emsp; "+data[i].content
+	           +"</td><td><input type='button' class='delete' value='Delete'  data-id=" + data[i].id + "></td><td><input type='button' class='edit' value='Update'  data-id=" + data[i].id + "></td></td><td><input type='button' class='show' value='Show'  data-id=" + data[i].id + "></td></tr></table><br>"
+	           
+	          }
+	     $("#result").html(output);	
+	          
+       }   //success function closed	
+}
+ $.ajax(ajaxoptions);  //ajax call closed
+var id;
+
+ // when delete button is clicked.
+	$(document).on("click", ".delete", function(){
+         		var id = $(this).data('id');
+         			$.ajax({
+						url: "ajs/"+id,
+						type: "delete",	
+						dataType: "html",
+						success:function(data) { 
+							 $.ajax(ajaxoptions);  
+
+						},
+						error: function(){
+	       					alert("error")
+						}
+					}); // delete  ajax() closed
+               });//delete click() closed
+
+
+
+
+
+$(document).on("click", ".edit", function(){
+    var id = $(this).data('id');
+
+    	$.ajax({
+			url: "ajs/"+id+"/edit",
+			type: "get",
+			data: id,	
+			//dataType: "html",
+			success: function(data) { 
+				just_check(data,id)
+			},
+			error: function(){
+				alert("error")	
+	    	}
+		}); // show  ajax() closed
+});//show click() closed
+	           	
+
+function just_check(data,id){
+	$("#mybox").html(data);
+	
+				    $(document).on("click", "#subid", function(e){
+				    //$("form").submit(function(e){
+				     	e.preventDefault();
+    						//console.log(id)
+    						var dataString = $(".edit_aj").serialize();
+    						alert(dataString)
+    						$.ajax({
+								url: "ajs/"+id,
+								type: "patch",
+								data : dataString,
+								success: function(data) { 
+
+									},
+								error: function(){
+
+									alert("error");
+	    						}
+						}); // show  ajax() closed
+    						
+    						//return false;
+				});//show click() closed
+}
+
+
+// $("#commit").click(function(){
+// 	alert("hlmlk")
+// 		$.ajax({
+// 			url: "ajs/134",
+// 			type: "patch",
+// 			//data: id,	
+// 			//dataType: "html",
+// 			success: function(data) { 
+// 				alert("edit");
+// 			},
+// 			error: function(){
+// 				alert("error")	
+// 			}
+// 			}); // show  ajax() closed
+//         });//show click() closed
+	           	
+
+
+
+
+// for getting new form on button click
+$("#create").click(function(){
+		$.ajax({
+			url: "ajs/new",
+			type: "GET",			
+			dataType: "html",
+			success:function(data) { 
+			    $("#mybox").html(data)
+			},
+			error: function(){
+			alert("error")
+		    }
+		});
+});
+
+
+
+//showing a record
+	// $(document).on("click", ".show", function(){
+ //         		var id = $(this).data('id');
+ //         			$.ajax({
+	// 					url: "ajs/"+id,
+	// 					type: "get",	
+	// 					dataType: "html",
+	// 					success:function(data) { 
+	// 						$("#showdata").html(data)  //ajax call closed								         				
+	// 					},
+	// 					error: function(){
+	//        					alert("error")
+	// 					}
+	// 				}); // delete  ajax() closed
+ //               });//delete click() closed
+$("#test").click(function(){
+		$.ajax({
+			url: "ajs/test",
+			type: "GET",			
+			dataType: "html",
+			success:function(data) { 
+			    $("#mybox").html(data)
+			},
+			error: function(){
+			alert("error")
+		    }
+		});
+
+})
+
+});   // jquery closed
+</script>
+
+</head>
+<body>
+  <h1>Logic Matter</h1>
+  
+  <input type="submit" name="submit" value="Create User" id="create">
+  <input type="button" name="test" value="test" id="test">
+<div id="showdata"></div>
+<div id="mybox"></div>
+<div id="editform"></div>
+<div id="result"></div>
+
+</body>
+</html>
